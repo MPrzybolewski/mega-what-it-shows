@@ -1,0 +1,47 @@
+---
+layout: runbook
+title: '#4471 holds three problems, not one'
+owner: Marek Przybolewski
+status: proposed
+reviewed: 2026-10-28
+signature: v1.eyJzdWIiOiIyMTg1IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyMjIzOTMsImV4cCI6MTc5MzMwODc5M30.Phy5JgYH03gRsLiD_qPNR5TjG-8_sp1MdE3Q7ehiDmI
+---
+
+<script>
+  import SplitTable from '#lib/kb/SplitTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) says one issue, one fix. Read report by report, it holds three
+different bugs. Each one now has its own ticket, so a fix for one is not mistaken for a fix for all.
+
+<Callout kind="warn">
+The queued parser fix closes only the first row. The other two keep coming after it ships.
+</Callout>
+
+## What #4471 holds
+
+<SplitTable ticket={4471} />
+
+## How each report was placed
+
+- **One report, one id.** The export pages overlap, so some reports appear twice. They are counted once.
+- **By tenant, not by browser.** A report's cause depends on the tenant: the locale they write dates
+  in and the booking form they run. Intake's tag is a guess from the reporter's browser and is
+  not used here.
+- **`parser`:** a day-first tenant whose date came out with day and month swapped. Most bodies
+  name both dates, and each pair is an exact swap.
+- **`hint`:** the same swap, but typed into the booking-v3 form, whose hint shows `MM/DD/YYYY`.
+  People type what the hint says. The parser fix does not reach it.
+- **`one-day`:** the date moved by one day, or differs between two people in different cities.
+  That is not a swap. The desk had already noted these reports, but filed them under `parser`.
+
+## Why one ticket hid them
+
+The desk merges on the subject line, not the body ([decision 0001](/kb/decisions/0001-dedupe-by-subject)).
+A subject line says how the problem felt ("wrong day", "dates mixed up"), not what caused it, and
+most subject lines in #4471 occur under more than one of the problems above. So no subject rule
+could have kept them apart. Reading the bodies and joining each report to its tenant did.
+
+<RenderStamp {signature} />
